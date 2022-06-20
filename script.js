@@ -1,3 +1,6 @@
+let computerScore = 0;
+let playerScore = 0;  
+
 // Create a function that returns a random number between one and three 
 function computerPlay() {
     //Calculates a random number in the range 2
@@ -22,33 +25,56 @@ function computerPlay() {
 //Create function that takes in two parameters, one is computer's choice, other is player's choice
 function playRound(playerSelection, computerSelection) {
 
-    //Convert player's choice to lowercase to make it case insensitive
-    playerSelection = playerSelection.toLowerCase()
+    userMsg = document.querySelector(".user-msg");
+    playerScoreMsg = document.querySelector("#player-score");
+    computerScoreMsg = document.querySelector("#computer-score");
+    message = document.querySelector(".message");
+    buttons = document.querySelector(".buttons");
+
+    userMsg = document.querySelector(".user-msg");
 
     //Use new function to compare choices
-    result = compare(playerSelection, computerSelection)
+    result = compare(playerSelection, computerSelection);
 
     //Capitalize first alphabets for better readability
-    playerSelection = capitalize(playerSelection)
-    computerSelection = capitalize(computerSelection)
+    playerSelection = capitalize(playerSelection);
+    computerSelection = capitalize(computerSelection);
 
     //Return winner 
     if (result === "winner") {
 
         //Use new function capitalize() to make first letter capital
-        return `You Win! ${playerSelection} beats ${computerSelection}`
+        userMsg.textContent = `You Win! ${playerSelection} beats ${computerSelection}`;
+        playerScore++
+        playerScoreMsg.textContent = `Player Score: ${playerScore}`;
     }
     else {
 
         //Check for a draw
         if (playerSelection === computerSelection) {
-            return `Draw! ${playerSelection} nullifies ${computerSelection}`
+            userMsg.textContent = `Draw! ${playerSelection} nullifies ${computerSelection}`
         }
 
-        //If player loses 
-        return `You Lose! ${computerSelection} beats ${playerSelection}`
+        else {
+            userMsg.textContent = `You Lose! ${computerSelection} beats ${playerSelection}`
+            computerScore++
+            computerScoreMsg.textContent = `Computer Score: ${computerScore}`;
+        }
     }
 
+    //Check who won 
+    if (computerScore >= 5) {
+        message.innerHTML = '';
+        buttons.innerHTML = '';
+        message.textContent = "DEFEAT! You Lost! Better luck next time.";
+    }
+
+    //Check for win
+    else if (playerScore >= 5) {
+        message.innerHTML = '';
+        buttons.innerHTML = '';
+        message.textContent = "VICTORY! Congratulations! You managed to defeat the computer.";
+    }
 }
 
 //Create helper function compare
@@ -78,56 +104,12 @@ function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1, string.length).toLowerCase()
 }
 
-//Function game goes on for five games and keeps track of victories and defeats
-function game() {
 
-    //Declare starting variables
-    let computerScore = 0;
-    let playerScore = 0;
-    let player = "";
-    let computer = "";
+const selectionBtns = document.querySelectorAll(".selectionBtn");
 
-    //Give introduction to user
-    alert("Welcome to Rock, Paper, Scissors! Play five rounds against computer and see if you can get a victory.")
-    
-    //Start matches, use loop, 
-    for (let i = 1; i < 6; i++) {
-
-        //Get values from both sides
-        player = prompt("Enter Rock, Paper or Scissors. Choose your weapon wisely.")
-        computer = computerPlay()
-
-        
-        //Call playRound() and save result
-        roundResult = playRound(player, computer)
-
-        //Display result 
-        alert(roundResult)
-
-        //If string has the word win, increment player score by one
-        if (roundResult.includes("Win")) {
-            playerScore++
-        }
-
-        //If string has the word  lose, increment computer score by one
-        else if (roundResult.includes("Lose")) {
-            computerScore++
-        }
-    }
-
-            //Check who won or whether it was a draw
-            if (playerScore === computerScore) {
-                alert("DRAW! A draw is not a bad result. Give it another go.")
-            }
-
-            //Check for win
-            else if (playerScore > computerScore) {
-                alert("VICTORY! Congratulations! You managed to defeat the computer.")
-            }
-    
-            else {
-                alert("DEFEAT! You Lost! Better luck next time.")
-            }
-    
-}
+selectionBtns.forEach(btn => {
+    btn.addEventListener("click", e =>{
+        playRound(e.target.id, computerPlay())
+    });
+});
 
